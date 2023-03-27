@@ -18,7 +18,8 @@ Help()
 }
 
 plotAll () {
-  gnuplot -persist -e "set title 'Residuals';\
+  gnuplot -persist -e "set terminal qt 1;\
+  					   set title 'Residuals';\
   					   set logscale y;\
                        set xlabel 'iter';\
                        set grid;\
@@ -28,11 +29,12 @@ plotAll () {
                             'residual.dat' using 1:5 title 'Velocity-y Res.' with lines,\
                             'residual.dat' using 1:6 title 'Energy Res.' with lines,\
                             'residual.dat' using 1:7 title 'TKE Res.' with lines,\
-                            'residual.dat' using 1:8 title 'Omega Res.' with lines;" -p "$windowname"
-} 
+                            'residual.dat' using 1:8 title 'Omega Res.' with lines;"
+}
 
 plotAllR () {
-    gnuplot -persist -e "set title 'Residuals';\
+    gnuplot -persist -e "set terminal qt 1;\
+						 set title 'Residuals';\
     					 set logscale y;\
                          set xlabel 'iter';\
                          set grid;\
@@ -43,7 +45,7 @@ plotAllR () {
                               'residual.dat' using 1:6 title 'Energy Res.' with lines,\
                               'residual.dat' using 1:7 title 'TKE Res.' with lines,\
                               'residual.dat' using 1:8 title 'Omega Res.' with lines;\
-						replot;" -p "$windowname"
+						replot;"
 } 
 
 plotFlow () {
@@ -83,7 +85,6 @@ while getopts "fhATM" option; do
            Help
            exit;;
       A) # Plot all residuals
-	  	   windowname="mywindow_$(date +%s%N)"
 	  	   plotAll
 		   while true; do
 		      # Re-plot all data every 5 seconds if -f option is set
