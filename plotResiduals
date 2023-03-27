@@ -1,0 +1,84 @@
+#!/bin/bash
+############################################################
+# Functions                                                #
+############################################################
+Help()
+{
+   # Display Help
+   echo "Print residuals for wolf solver"
+   echo
+   echo "Syntax: printResiduals [-A|f|flow|h|turb]"
+   echo "options:"
+   echo "A		Print all variable residuals."
+   echo "f		Print residuals at runtime."
+   echo "M		Print mean flow variable residuals."
+   echo "T		Print turbulent variable residuals."
+   echo "h		Print this Help."
+   echo
+}
+  
+plotAll () {
+  gnuplot -persist -e "set logscale y;
+                       set xlabel 'iter';\
+                       set grid;\
+                       set format y '%g';\
+                       plot 'residual.dat' using 1:3 title 'Density Res.' with lines,\
+                            'residual.dat' using 1:4 title 'Velocity-x Res.' with lines,\
+                            'residual.dat' using 1:5 title 'Velocity-y Res.' with lines,\
+                            'residual.dat' using 1:6 title 'Energy Res.' with lines,\
+                            'residual.dat' using 1:7 title 'TKE Res.' with lines,\
+                            'residual.dat' using 1:8 title 'Omega Res.' with lines"
+} 
+
+plotFlow () {
+  gnuplot -persist -e "set logscale y;
+                       set xlabel 'iter';\
+                       set grid;\
+                       set format y '%g';\
+                       plot 'residual.dat' using 1:3 title 'Density Res.' with lines,\
+                            'residual.dat' using 1:4 title 'Velocity-x Res.' with lines,\
+                            'residual.dat' using 1:5 title 'Velocity-y Res.' with lines,\
+                            'residual.dat' using 1:6 title 'Energy Res.' with lines"
+} 
+
+plotTurb () {
+  gnuplot -persist -e "set logscale y;
+                       set xlabel 'iter';\
+                       set grid;\
+                       set format y '%g';\
+                       plot 'residual.dat' using 1:7 title 'TKE Res.' with lines,\
+                            'residual.dat' using 1:8 title 'Omega Res.' with lines"
+} 
+
+############################################################
+############################################################
+# Main program                                             #
+############################################################
+############################################################
+############################################################
+# Process the input options. Add options as needed.        #
+############################################################
+# Get the options
+while getopts "hATMf" option; do
+   case $option in
+      h) # display Help
+           Help
+           exit;;
+      A) # Plot all residuals
+           plotAll
+		   ;;
+      T) # Plot all residuals
+	  	   plotTurb
+		   ;;
+      M) # Plot all residuals
+           plotFlow
+		   ;;
+	  f) # print runtime
+		   #pause 5;
+		   #replot;
+		   ;;
+     \?) # Invalid option
+         echo "Error: Invalid option"
+         exit;;
+   esac
+done
