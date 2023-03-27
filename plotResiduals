@@ -18,7 +18,8 @@ Help()
 }
   
 plotAll () {
-  gnuplot -persist -e "set logscale y;
+  gnuplot -persist -e "set title 'Residuals';\
+  					   set logscale y;\
                        set xlabel 'iter';\
                        set grid;\
                        set format y '%g';\
@@ -30,8 +31,24 @@ plotAll () {
                             'residual.dat' using 1:8 title 'Omega Res.' with lines"
 } 
 
+plotAllR () {
+    gnuplot -persist -e "set title 'Residuals';\
+    					 set logscale y;\
+                         set xlabel 'iter';\
+                         set grid;\
+                         set format y '%g';\
+                         plot 'residual.dat' using 1:3 title 'Density Res.' with lines,\
+                              'residual.dat' using 1:4 title 'Velocity-x Res.' with lines,\
+                              'residual.dat' using 1:5 title 'Velocity-y Res.' with lines,\
+                              'residual.dat' using 1:6 title 'Energy Res.' with lines,\
+                              'residual.dat' using 1:7 title 'TKE Res.' with lines,\
+                              'residual.dat' using 1:8 title 'Omega Res.' with lines;\
+						replot;" -p mywindow
+} 
+
 plotFlow () {
-  gnuplot -persist -e "set logscale y;
+  gnuplot -persist -e "set title 'Mean Flow Residuals';\
+  					   set logscale y;\
                        set xlabel 'iter';\
                        set grid;\
                        set format y '%g';\
@@ -42,7 +59,8 @@ plotFlow () {
 } 
 
 plotTurb () {
-  gnuplot -persist -e "set logscale y;
+  gnuplot -persist -e "set title 'Turbulence Residuals';\
+  					   set logscale y;\
                        set xlabel 'iter';\
                        set grid;\
                        set format y '%g';\
@@ -65,40 +83,22 @@ while getopts "fhATM" option; do
            Help
            exit;;
       A) # Plot all residuals
-           plotAll
 		   while true; do
 		      # Re-plot all data every 5 seconds if -f option is set
 		      if [[ $flag_f == true ]]; then
-		        gnuplot -persist -e "set title 'Residuals'; replot"
-		        sleep 5
+				plotAllR
+				sleep 5
 		      else
+				plotAll
 		        break
 		      fi
 		   done
 		   ;;
       T) # Plot all residuals
 	  	   plotTurb
-		   while true; do
-		      # Re-plot all data every 5 seconds if -f option is set
-		      if [[ $flag_f == true ]]; then
-		        gnuplot -persist -e "set title 'Residuals'; replot"
-		        sleep 5
-		      else
-		        break
-		      fi
-		   done
 		   ;;
       M) # Plot all residuals
            plotFlow
-		   while true; do
-		      # Re-plot all data every 5 seconds if -f option is set
-		      if [[ $flag_f == true ]]; then
-		        gnuplot -persist -e "set title 'Residuals'; replot"
-		        sleep 5
-		      else
-		        break
-		      fi
-		   done
 		   ;;
 	  f) # print runtime
 		   flag_f=true
