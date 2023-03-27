@@ -17,6 +17,8 @@ Help()
    echo
 }
   
+windowname="mywindow"
+
 plotAll () {
   gnuplot -persist -e "set title 'Residuals';\
   					   set logscale y;\
@@ -43,7 +45,7 @@ plotAllR () {
                               'residual.dat' using 1:6 title 'Energy Res.' with lines,\
                               'residual.dat' using 1:7 title 'TKE Res.' with lines,\
                               'residual.dat' using 1:8 title 'Omega Res.' with lines;\
-						replot;" -p mywindow
+						replot;" -p "$windowname"
 } 
 
 plotFlow () {
