@@ -18,8 +18,7 @@ Help()
 }
 
 plotAll () {
-  gnuplot -persist -e "set terminal qt 1;\
-  					   set title 'Residuals';\
+  gnuplot -persist -e "set title 'Residuals';\
   					   set logscale y;\
                        set xlabel 'iter';\
                        set grid;\
@@ -33,8 +32,7 @@ plotAll () {
 }
 
 plotAllR () {
-    gnuplot -persist -e "set terminal qt 1;\
-						 set title 'Residuals';\
+    gnuplot -persist -e "set title 'Residuals';\
     					 set logscale y;\
                          set xlabel 'iter';\
                          set grid;\
@@ -45,6 +43,7 @@ plotAllR () {
                               'residual.dat' using 1:6 title 'Energy Res.' with lines,\
                               'residual.dat' using 1:7 title 'TKE Res.' with lines,\
                               'residual.dat' using 1:8 title 'Omega Res.' with lines;\
+						pause 5;\
 						replot;"
 } 
 
@@ -85,16 +84,12 @@ while getopts "fhATM" option; do
            Help
            exit;;
       A) # Plot all residuals
-	  	   plotAll
-		   while true; do
-		      # Re-plot all data every 5 seconds if -f option is set
-		      if [[ $flag_f == true ]]; then
-				plotAllR
-				sleep 5
-		      else
-		        break
-		      fi
-		   done
+		   # Re-plot all data every 5 seconds if -f option is set
+		   if [[ $flag_f == true ]]; then
+		     plotAllR
+		   else
+		     plotAll
+		   fi
 		   ;;
       T) # Plot all residuals
 	  	   plotTurb
