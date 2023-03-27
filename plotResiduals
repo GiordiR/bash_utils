@@ -17,6 +17,11 @@ Help()
    echo
 }
 
+loop () {
+	pause 5
+	replot
+}
+
 plotAll () {
   gnuplot -persist -e "set title 'Residuals';\
   					   set logscale y;\
@@ -28,21 +33,7 @@ plotAll () {
                             'residual.dat' using 1:5 title 'Velocity-y Res.' with lines,\
                             'residual.dat' using 1:6 title 'Energy Res.' with lines,\
                             'residual.dat' using 1:7 title 'TKE Res.' with lines,\
-                            'residual.dat' using 1:8 title 'Omega Res.' with lines;" 
-}
-
-plotAllR () {
-  gnuplot -persist -e "set title 'Residuals';\
-  					   set logscale y;\
-                       set xlabel 'iter';\
-                       set grid;\
-                       set format y '%g';\
-                       plot 'residual.dat' using 1:3 title 'Density Res.' with lines,\
-                            'residual.dat' using 1:4 title 'Velocity-x Res.' with lines,\
-                            'residual.dat' using 1:5 title 'Velocity-y Res.' with lines,\
-                            'residual.dat' using 1:6 title 'Energy Res.' with lines,\
-                            'residual.dat' using 1:7 title 'TKE Res.' with lines,\
-                            'residual.dat' using 1:8 title 'Omega Res.' with lines;" -e "pause 5;replot"
+                            'residual.dat' using 1:8 title 'Omega Res.' with lines;" loop.plt
 }
 
 
@@ -68,6 +59,18 @@ plotTurb () {
                             'residual.dat' using 1:8 title 'Omega Res.' with lines"
 } 
 
+# function to handle interrupt signal
+function cleanup {
+    echo "Cleaning up..."
+    rm -f residual.dat
+    # close the gnuplot window
+    echo "exit" > /tmp/gnuplot-plotAllR
+    exit 0
+}
+
+# trap the interrupt signal and execute the cleanup function
+trap cleanup SIGINT
+
 ############################################################
 ############################################################
 # Main program                                             #
@@ -85,10 +88,15 @@ while getopts "fhATM" option; do
       A) # Plot all residuals
 		   # Re-plot all data every 5 seconds if -f option is set
 		   if [[ $flag_f == true ]]; then
-			   plotAllR
-		   else
-			   plotAll
+			   echo "Writing loop plot file"
+			   echo "pause 5" > loop.plt
+			   echo "replot" >> loop.plt
+			   while true; 
+			   do
+			   	  plotAll
+			   done
 		   fi
+		   plotAll
 		   ;;
       T) # Plot all residuals
 	  	   plotTurb
