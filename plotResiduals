@@ -59,23 +59,49 @@ plotTurb () {
 # Process the input options. Add options as needed.        #
 ############################################################
 # Get the options
-while getopts "hATMf" option; do
+while getopts "fhATM" option; do
    case $option in
       h) # display Help
            Help
            exit;;
       A) # Plot all residuals
            plotAll
+		   while true; do
+		      # Re-plot all data every 5 seconds if -f option is set
+		      if [[ $flag_f == true ]]; then
+		        gnuplot -persist -e "set title 'Residuals'; replot"
+		        sleep 5
+		      else
+		        break
+		      fi
+		   done
 		   ;;
       T) # Plot all residuals
 	  	   plotTurb
+		   while true; do
+		      # Re-plot all data every 5 seconds if -f option is set
+		      if [[ $flag_f == true ]]; then
+		        gnuplot -persist -e "set title 'Residuals'; replot"
+		        sleep 5
+		      else
+		        break
+		      fi
+		   done
 		   ;;
       M) # Plot all residuals
            plotFlow
+		   while true; do
+		      # Re-plot all data every 5 seconds if -f option is set
+		      if [[ $flag_f == true ]]; then
+		        gnuplot -persist -e "set title 'Residuals'; replot"
+		        sleep 5
+		      else
+		        break
+		      fi
+		   done
 		   ;;
 	  f) # print runtime
-		   #pause 5;
-		   #replot;
+		   flag_f=true
 		   ;;
      \?) # Invalid option
          echo "Error: Invalid option"
